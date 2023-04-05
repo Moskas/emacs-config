@@ -53,5 +53,6 @@
 (package! blamer)
 (package! mpdel)
 (package! pdf-tools)
+(package! nov)
 (package! beacon)
 (package! olivetti)
