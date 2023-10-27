@@ -1,0 +1,3 @@
+#+title: Readme
+
+My Doom-Emacs config with added packages and minor eyecandy changes.

@@ -26,18 +26,18 @@
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
 ;; custom random splash image
-(load-file "/home/moskas/projects/elisp/logo.el")
-(setq logo-path "/home/moskas/.doom.d/logos/")
+(load-file "/home/moskas/Projects/elisp/random-logo/logo.el")
+(setq logo-path "/home/moskas/.config/doom/logos/")
 (setq logo-images (list "chocola.png" "chocola-vanilla.png" "chocola-surprised.png" "chocola-dead.png"))
 
 (setq fancy-splash-image (logo-random))
 
 (setq doom-theme 'doom-gruvbox)
+(add-to-list 'default-frame-alist '(background-color . "#32302f"))
 (setq doom-font (font-spec :family "JetBrainsMono Nerd Font" :size 16 :weight 'medium)
       doom-unicode-font(font-spec :family "JetBrainsMono Nerd Font" :size 16)
       doom-variable-pitch-font (font-spec :family "JetBrainsMono Nerd Font" :size 16 :weight 'medium))
 (global-prettify-symbols-mode 1)
-(elcord-mode 1)
 (beacon-mode 1) ;; Flash line on cursor movement
 
 ;; elcord settings
@@ -50,9 +50,6 @@
 (setq mastodon-instance-url "https://fosstodon.org")
 
 (setq empv-invidious-instance "https://invidious.baczek.me/api/v1")
-(use-package ox-moderncv
-  :load-path "/home/moskas/Documents/Org/org-cv/"
-  :init (require 'ox-moderncv))
 
 (use-package blamer
   :bind (("s-i" . blamer-show-commit-info))
@@ -68,35 +65,79 @@
   :config
   (global-blamer-mode 1))
 
-
-(require 'battery)
-(when (and battery-status-function
-           (not (string-match-p "N/A"
-                                (battery-format "%B"
-                                                (funcall battery-status-function)))))
-  (display-battery-mode 1))
-
-(add-to-list 'load-path "~/.emacs.d/site-lisp/emacs-application-framework/")
-
 ;; Nov-mode setup
 (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
 (defun my-nov-font-setup ()
-  (face-remap-add-relative 'variable-pitch :family "JetBrainsMono Nerd Font"
-                           :height 1.0))
+  (face-remap-add-relative 'variable-pitch :family "Iosevka"
+                           :height 1.0
+                           :weight medium))
 (setq nov-text-width t)
 (setq visual-fill-column-center-text t)
 (add-hook 'nov-mode-hook 'my-nov-font-setup)
 (add-hook 'nov-mode-hook 'visual-line-mode)
 (add-hook 'nov-mode-hook 'visual-fill-column-mode)
-
+;; disable beacon-mode in nov-mode
+(add-hook 'nov-mode-hook (lambda () beacon-mode -1))
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory "~/Documents/Org/")
-;; This determines the style of line numbers in effect. If set to `nil', line
-;; numbers are disabled. For relative line numbers, set this to `relative'.
-;; Hooks
+(after! org
+  (setq org-roam-directory "~/Documents/org/roam/")
+  (setq org-roam-index-file "~/Documents/org/roam/index.org"))
+(setq display-time-24hr-format t)
+(setq display-time-default-load-average nil)
+
+;; Org-mode tweaks
+(defun my-org-faces ()
+  (set-face-attribute 'org-todo nil :height 1.0)
+  (set-face-attribute 'org-level-1 nil :height 1.2 :family "variable-pitch")
+  (set-face-attribute 'org-level-2 nil :height 1.1)
+  (setq org-hide-emphasis-markers t)
+  (set-face-attribute 'org-block-begin-line nil :background 'unspecified)
+  (set-face-attribute 'org-block-end-line nil :background 'unspecified)
+  ;; Set the foreground color to the value of the background color
+  (set-face-attribute 'org-block-begin-line nil
+                      :foreground (face-background 'org-block-begin-line nil 'default))
+  (set-face-attribute 'org-block-end-line nil
+                      :foreground (face-background 'org-block-end-line nil 'default))
+  (display-time)
+  (setq display-line-numbers-mode -1)
+  )
+(add-hook 'org-mode-hook #'my-org-faces)
+
+;; Markdown-mode tweaks
+(custom-set-faces
+ '(markdown-header-face ((t (:inherit font-lock-function-name-face :weight bold :family "variable-pitch"))))
+ '(markdown-header-face-1 ((t (:inherit markdown-header-face :height 1.3))))
+ '(markdown-header-face-2 ((t (:inherit markdown-header-face :height 1.2))))
+ '(markdown-header-face-3 ((t (:inherit markdown-header-face :height 1.1)))))
 (add-hook 'python-mode-hook #'rainbow-mode)
 (add-hook 'org-mode-hook #'olivetti-mode)
+
+;; eshell config
+(defun with-face (str &rest face-plist)
+  (propertize str 'face face-plist))
+
+(defun shk-eshell-prompt ()
+  (let ((header-bg "#282828"))
+    (concat
+     (with-face (concat (eshell/pwd) " ") :background header-bg)
+     (with-face (format-time-string "(%Y-%m-%d %H:%M) " (current-time)) :background header-bg :foreground "#ebdbb2")
+     (with-face
+      (or (ignore-errors (format "(%s)" (vc-responsible-backend default-directory))) "")
+      :background header-bg)
+     (with-face "\n" :background header-bg)
+     (with-face user-login-name :foreground "#458588")
+     "@"
+     (with-face "gungnir" :foreground "#689d6a")
+     (if (= (user-uid) 0)
+         (with-face " #" :foreground "#cc241d")
+       " $")
+     " ")))
+(setq eshell-prompt-function 'shk-eshell-prompt)
+(setq eshell-highlight-prompt nil)
+
+(direnv-mode)
 
 ;; Here are some additional functions/macros that could help you configure Doom:
 ;;
