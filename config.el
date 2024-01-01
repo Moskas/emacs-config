@@ -26,7 +26,7 @@
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
 ;; custom random splash image
-(load-file "/home/moskas/Projects/elisp/random-logo/logo.el")
+(load-file "/home/moskas/.config/doom/custom/logo.el")
 (setq logo-path "/home/moskas/.config/doom/logos/")
 (setq logo-images (list "chocola.png" "chocola-vanilla.png" "chocola-surprised.png" "chocola-dead.png"))
 
@@ -35,7 +35,7 @@
 (setq doom-theme 'doom-gruvbox)
 (add-to-list 'default-frame-alist '(background-color . "#32302f"))
 (setq doom-font (font-spec :family "JetBrainsMono Nerd Font" :size 16 :weight 'medium)
-      doom-unicode-font(font-spec :family "JetBrainsMono Nerd Font" :size 16)
+      ;;doom-unicode-font(font-spec :family "JetBrainsMono Nerd Font" :size 16)
       doom-variable-pitch-font (font-spec :family "JetBrainsMono Nerd Font" :size 16 :weight 'medium))
 (global-prettify-symbols-mode 1)
 (beacon-mode 1) ;; Flash line on cursor movement
@@ -49,8 +49,6 @@
 (setq mastodon-active-user "Moskas")
 (setq mastodon-instance-url "https://fosstodon.org")
 
-(setq empv-invidious-instance "https://invidious.baczek.me/api/v1")
-
 (use-package blamer
   :bind (("s-i" . blamer-show-commit-info))
   :defer 20
@@ -60,10 +58,14 @@
   :custom-face
   (blamer-face ((t :foreground "#d3869b"
                    :background nil
-                   :height 110
+                   :height 100
                    :italic t)))
   :config
   (global-blamer-mode 1))
+;;(setq blamer-view 'overlay)
+;;(setq blamer-author-formatter "  ✎ %s ")
+;;(setq blamer-datetime-formatter "[%s]")
+;;(setq blamer-commit-formatter " ● %s")
 
 ;; Nov-mode setup
 (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
@@ -90,7 +92,7 @@
 ;; Org-mode tweaks
 (defun my-org-faces ()
   (set-face-attribute 'org-todo nil :height 1.0)
-  (set-face-attribute 'org-level-1 nil :height 1.2 :family "variable-pitch")
+  (set-face-attribute 'org-level-1 nil :height 1.2)
   (set-face-attribute 'org-level-2 nil :height 1.1)
   (setq org-hide-emphasis-markers t)
   (set-face-attribute 'org-block-begin-line nil :background 'unspecified)
@@ -101,7 +103,7 @@
   (set-face-attribute 'org-block-end-line nil
                       :foreground (face-background 'org-block-end-line nil 'default))
   (display-time)
-  (setq display-line-numbers-mode -1)
+  (display-line-numbers-mode 0)
   )
 (add-hook 'org-mode-hook #'my-org-faces)
 
@@ -113,7 +115,7 @@
  '(markdown-header-face-3 ((t (:inherit markdown-header-face :height 1.1)))))
 (add-hook 'python-mode-hook #'rainbow-mode)
 (add-hook 'org-mode-hook #'olivetti-mode)
-
+(add-hook 'markdown-mode-hook #'olivetti-mode)
 ;; eshell config
 (defun with-face (str &rest face-plist)
   (propertize str 'face face-plist))
@@ -138,6 +140,18 @@
 (setq eshell-highlight-prompt nil)
 
 (direnv-mode)
+
+(use-package ellama
+  :init
+  (setopt ellama-language "English")
+  (require 'llm-ollama)
+  (setopt ellama-provider
+	  (make-llm-ollama
+	   :chat-model "codellama" :embedding-model "codellama")))
+
+(global-set-key (kbd "C-S-V") #'kill-ring-save)
+
+(custom-set-faces! '(default :background "#282828"))
 
 ;; Here are some additional functions/macros that could help you configure Doom:
 ;;

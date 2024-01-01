@@ -55,7 +55,7 @@
 (package! beacon)
 (package! olivetti)
 (package! mastodon)
-(package! hackernews)
 (package! ement)
 (package! el-fetch)
 (package! direnv)
+(package! ellama)
