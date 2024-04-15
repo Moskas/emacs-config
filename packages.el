@@ -56,6 +56,11 @@
 (package! olivetti)
 (package! mastodon)
 (package! ement)
-(package! el-fetch)
 (package! direnv)
 (package! ellama)
+(package! nano-agenda)
+(package! mu4e-views)
+(package! stumpwm-mode)
+
+(package! auto-dark)
+(package! spacious-padding)

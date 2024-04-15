@@ -26,13 +26,29 @@
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
 ;; custom random splash image
-(load-file "/home/moskas/.config/doom/custom/logo.el")
+(load! "/home/moskas/.config/doom/custom/logo.el")
 (setq logo-path "/home/moskas/.config/doom/logos/")
-(setq logo-images (list "chocola.png" "chocola-vanilla.png" "chocola-surprised.png" "chocola-dead.png"))
+(setq logo-images
+      (list
+       "chocola.png"
+       "chocola-vanilla.png"
+       "chocola-surprised.png"
+       "chocola-dead.png"
+       "chocola-laughing.png"
+       "chocola-ok.png"
+       "chocola-sorry.png"
+       "go.png"
+       "chocola-dead.png"))
 
 (setq fancy-splash-image (logo-random))
 
 (setq doom-theme 'doom-gruvbox)
+
+;; (after! doom-ui
+;;   ;; set your favorite themes
+;;   (setq! auto-dark-dark-theme 'doom-gruvbox
+;;          auto-dark-light-theme 'doom-gruvbox-light)
+;;   (auto-dark-mode 1))
 ;;(add-to-list 'default-frame-alist '(background-color . "#32302f"))
 (setq doom-font (font-spec :family "JetBrainsMono Nerd Font" :size 16 :weight 'regular)
       ;;doom-unicode-font(font-spec :family "JetBrainsMono Nerd Font" :size 16)
@@ -49,17 +65,12 @@
 (setq mastodon-active-user "Moskas")
 (setq mastodon-instance-url "https://fosstodon.org")
 
-(use-package blamer
+(use-package! blamer
   :bind (("s-i" . blamer-show-commit-info))
   :defer 20
   :custom
   (blamer-idle-time 0.3)
   (blamer-min-offset 20)
-  :custom-face
-  (blamer-face ((t :foreground "#d3869b"
-                   :background nil
-                   :height 100
-                   :italic t)))
   :config
   (global-blamer-mode 1))
 ;; Nov-mode setup
@@ -86,39 +97,33 @@
 
 ;; Org-mode tweaks
 (defun my-org-faces ()
-  (set-face-attribute 'org-todo nil :height 1.0)
-  (set-face-attribute 'org-level-1 nil :height 1.0)
-  (set-face-attribute 'org-level-2 nil :height 1.0)
-  (set-face-attribute 'org-level-3 nil :height 1.0)
   (setq org-hide-emphasis-markers t)
-  ;;(set-face-attribute 'org-block-begin-line nil :background 'unspecified)
-  ;;(set-face-attribute 'org-block-end-line nil :background 'unspecified)
-  ;; Set the foreground color to the value of the background color
-  ;;(set-face-attribute 'org-block-begin-line nil
-  ;;                    :foreground (face-background 'org-block-begin-line nil 'default))
-  ;;(set-face-attribute 'org-block-end-line nil
-  ;;                    :foreground (face-background 'org-block-end-line nil 'default))
+  (set-face-attribute 'org-todo nil :height 1.0)
+  (set-face-attribute 'org-level-1 nil :height 1.3)
+  (set-face-attribute 'org-level-2 nil :height 1.2)
+  (set-face-attribute 'org-level-3 nil :height 1.1)
+  (set-face-attribute 'org-document-title nil :height 1.2)
   (display-time)
+  (highlight-indent-guides-mode 0)
   (display-line-numbers-mode 0)
+  (org-indent-mode 0)
   (blamer-mode 0)
   (beacon-mode 0))
 (add-hook 'org-mode-hook #'my-org-faces)
 
-;; Markdown-mode tweaks
 (custom-set-faces
- '(markdown-header-face ((t (:inherit font-lock-function-name-face :weight bold))))
- '(markdown-header-face-1 ((t (:inherit markdown-header-face :height 1.0))))
- '(markdown-header-face-2 ((t (:inherit markdown-header-face :height 1.0))))
- '(markdown-header-face-3 ((t (:inherit markdown-header-face :height 1.0)))))
-(add-hook 'python-mode-hook #'rainbow-mode)
-(add-hook 'org-mode-hook #'olivetti-mode)
+ `(blamer-face ((t (:foreground ,(doom-color 'violet) :italic t)))))
+
+
+;; Remove "~" fringe in text-mode
+(remove-hook 'text-mode-hook #'vi-tilde-fringe-mode)
+(add-hook 'text-mode-hook #'olivetti-mode)
+
+(add-hook 'prog-mode #'rainbow-mode)
 (add-hook 'markdown-mode-hook #'olivetti-mode)
 ;; eshell config
 (defun with-face (str &rest face-plist)
   (propertize str 'face face-plist))
-
-(direnv-mode)
-
 (defun shk-eshell-prompt ()
   (let ((header-bg "#282828"))
     (concat
@@ -138,15 +143,22 @@
 (setq eshell-prompt-function 'shk-eshell-prompt)
 (setq eshell-highlight-prompt nil)
 
-(use-package ellama
+(use-package! ellama
   :init
   (setopt ellama-language "English")
   (require 'llm-ollama)
+  (setopt ellama-keymap-prefix "C-c e")
+  (setopt ellama-auto-scroll t)
   (setopt ellama-provider
           (make-llm-ollama
-           :chat-model "codellama" :embedding-model "codellama")))
-
-;;(global-set-key (kbd "C-S-V") #'kill-ring-save)
+           :chat-model "mistral" :embedding-model "mistral"))
+  (setopt ellama-providers
+          '(("mistral" .
+             (make-llm-ollama
+              :chat-model "mistral" :embedding-model "mistral"))
+            ("codellama" .
+             (make-llm-ollama
+              :chat-model "codellama" :embedding-model "codellama")))))
 
 (add-hook 'nix-mode-hook #'rainbow-delimiters-mode)
 (setq direnv-always-show-summary nil)
@@ -154,6 +166,50 @@
 (use-package rainbow-mode
   :hook org-mode prog-mode)
 
+;; direnv
+(direnv-mode)
+
+(setq mu4e-root-maildir "~/.mail/gmail"
+      mu4e-sent-folder "/Sent"
+      mu4e-drafts-folder "/Drafts"
+      mu4e-trash-folder "/Trash")
+
+;; Add nano agenda
+(map! :leader
+      :desc "Open nano agenda" "o a n" #'nano-agenda)
+;; Disable evil-mode in nano-agenda buffer
+(add-to-list 'evil-insert-state-modes 'nano-agenda-mode)
+
+(add-hook 'nix-mode #'rainbow-delimiters-mode)
+
+(pixel-scroll-precision-mode t)
+
+(use-package spacious-padding
+  :custom
+  (setq spacious-padding-widths
+        `( :internal-border-width 5
+           :header-line-width 4
+           :mode-line-width 3
+           :tab-width 4
+           :right-divider-width 10
+           :scroll-bar-width 8
+           :fringe-width 4))
+  (setq spacious-padding-subtle-mode-line
+        `( :mode-line-active 'default
+           :mode-line-inactive vertical-border))
+  :init
+  (spacious-padding-mode 1))
+
+(use-package centaur-tabs
+  :config
+  (setq centaur-tabs-height 32)
+  :hook
+  (dired-mode . centaur-tabs-local-mode)
+  (vterm-mode . centaur-tabs-local-mode))
+
+(custom-theme-set-faces! 'doom-gruvbox
+  '(org-block :background "#3c3836")
+  '(treemacs-window-background-face :background "#1d2021"))
 ;; Here are some additional functions/macros that could help you configure Doom:
 ;;
 ;; - `load!' for loading external *.el files relative to this one
