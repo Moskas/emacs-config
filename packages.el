@@ -52,6 +52,8 @@
 (package! elcord)
 (package! blamer)
 (package! nov)
+(package! nov-xwidget
+  :recipe (:host github :repo "chenyanming/nov-xwidget"))
 (package! beacon)
 (package! olivetti)
 (package! mastodon)
@@ -62,5 +64,7 @@
 (package! mu4e-views)
 (package! stumpwm-mode)
 
-(package! auto-dark)
+(package! elfeed-webkit)
+
+(package! circadian)
 (package! spacious-padding)

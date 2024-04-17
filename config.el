@@ -44,17 +44,26 @@
 
 (setq doom-theme 'doom-gruvbox)
 
+(after! doom-ui
+  (use-package circadian
+    :ensure t
+    :config
+    (setq calendar-latitude 52.2297)
+    (setq calendar-longitude 21.0122)
+    (setq circadian-themes '((:sunrise . doom-gruvbox-light)
+                             (:sunset  . doom-gruvbox)))
+    (circadian-setup)))
+
 ;; (after! doom-ui
 ;;   ;; set your favorite themes
 ;;   (setq! auto-dark-dark-theme 'doom-gruvbox
 ;;          auto-dark-light-theme 'doom-gruvbox-light)
 ;;   (auto-dark-mode 1))
 ;;(add-to-list 'default-frame-alist '(background-color . "#32302f"))
-(setq doom-font (font-spec :family "JetBrainsMono Nerd Font" :size 16 :weight 'regular)
+(setq doom-font (font-spec :family "JetBrains Mono Nerd Font" :size 16 :weight 'regular)
       ;;doom-unicode-font(font-spec :family "JetBrainsMono Nerd Font" :size 16)
-      doom-variable-pitch-font (font-spec :family "Iosevka Nerd Font" :size 16 :weight 'regular))
+      doom-variable-pitch-font (font-spec :family "JetBrains Mono Nerd Font" :size 16 :weight 'regular))
 (global-prettify-symbols-mode 1)
-(beacon-mode 1) ;; Flash line on cursor movement
 
 ;; elcord settings
 (setq elcord-quiet t)
@@ -67,25 +76,36 @@
 
 (use-package! blamer
   :bind (("s-i" . blamer-show-commit-info))
+  :after
+  doom-theme
   :defer 20
   :custom
   (blamer-idle-time 0.3)
   (blamer-min-offset 20)
+  (custom-set-faces
+   `(blamer-face ((t (:foreground ,(doom-color 'violet) :italic t)))))
   :config
   (global-blamer-mode 1))
 ;; Nov-mode setup
 (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
 (defun my-nov-font-setup ()
-  (face-remap-add-relative 'variable-pitch :family "JetBrains Mono Nerd Font"
-                           :height 1.0
+  (face-remap-add-relative 'variable-pitch :family "Iosevka Nerd Font"
+                           ;;:height 1.0
+                           :size 16
                            :weight medium))
 (setq nov-text-width t)
 (setq visual-fill-column-center-text t)
 (add-hook 'nov-mode-hook 'my-nov-font-setup)
 (add-hook 'nov-mode-hook 'visual-line-mode)
 (add-hook 'nov-mode-hook 'visual-fill-column-mode)
-;; disable beacon-mode in nov-mode
-(add-hook 'nov-mode-hook (lambda () beacon-mode -1))
+
+(use-package nov-xwidget
+  :after nov
+  :config
+  (define-key nov-mode-map (kbd "o") 'nov-xwidget-view)
+  (add-hook 'nov-mode-hook 'nov-xwidget-inject-all-files))
+
+
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory "~/Documents/Org/")
@@ -102,7 +122,7 @@
   (set-face-attribute 'org-level-1 nil :height 1.3)
   (set-face-attribute 'org-level-2 nil :height 1.2)
   (set-face-attribute 'org-level-3 nil :height 1.1)
-  (set-face-attribute 'org-document-title nil :height 1.2)
+  (set-face-attribute 'org-document-title nil :height 1.5)
   (display-time)
   (highlight-indent-guides-mode 0)
   (display-line-numbers-mode 0)
@@ -111,9 +131,42 @@
   (beacon-mode 0))
 (add-hook 'org-mode-hook #'my-org-faces)
 
-(custom-set-faces
- `(blamer-face ((t (:foreground ,(doom-color 'violet) :italic t)))))
+(add-hook 'org-mode-hook
+          (lambda ()
+            (dolist (pair '(("[ ]"         . ?)
+                            ("[X]"         . ?)
+                            ("[-]"         . ?)
+                            ("#+title:"    . ?)
+                            ("#+TITLE:"    . ?)
+                            ("#+author:"   . ?)
+                            ("#+AUTHOR:"   . ?)
+                            ("#+options:"  . ?)
+                            ("#+OPTIONS:"  . ?)
+                            ("#+email:"    . ?)
+                            ("#+EMAIL:"    . ?)
+                            ("#+include"   . ?⭳)
+                            ("#+INCLUDE"   . ?⭳)
+                            ("#+begin_src" . ?)
+                            ("#+BEGIN_SRC" . ?)
+                            ("#+end_src"   . ?)
+                            ("#+END_SRC"   . ?)
+                            ("#+begin_quote" . ?)
+                            ("#+BEGIN_QUOTE" . ?)
+                            ("#+end_quote" . ?)
+                            ("#+END_QUOTE" . ?)
+                            ("#+date:"     . ?)
+                            ("#+DATE:"     . ?)
+                            ("#+tags:"     . ?)
+                            ("#+TAGS:"     . ?)
+                            ("#+HTML_HEAD:" . ?)
+                            ("#+HTML:"      . ?)
+                            ("#+startup:"   . ?)
+                            ("#+STARTUP:"   . ?)
+                            (":tangle"     . ?)))
+              (add-to-list 'prettify-symbols-alist pair))
+            (prettify-symbols-mode)))
 
+(ligature-set-ligatures '(org-mode) '("<!--" "-->" "</>" "</" "/>" "://" "<=" ">=" "==" "!=" "=>" "->" "<-" ">->" "<-<"))
 
 ;; Remove "~" fringe in text-mode
 (remove-hook 'text-mode-hook #'vi-tilde-fringe-mode)
@@ -203,13 +256,58 @@
 (use-package centaur-tabs
   :config
   (setq centaur-tabs-height 32)
+  :init
+  (centaur-tabs-mode t)
   :hook
+  (+doom-dashboard-mode . centaur-tabs-local-mode)
   (dired-mode . centaur-tabs-local-mode)
+  (nov-mode . centaur-tabs-local-mode)
+  (xwidget-webkit-mode . centaur-tabs-local-mode)
+  (elfeed-search-mode . centaur-tabs-local-mode)
+  (elfeed-show-mode . centaur-tabs-local-mode)
   (vterm-mode . centaur-tabs-local-mode))
 
 (custom-theme-set-faces! 'doom-gruvbox
   '(org-block :background "#3c3836")
   '(treemacs-window-background-face :background "#1d2021"))
+
+(setq rmh-elfeed-org-files (list "~/Documents/Org/Notes/Emacs/elfeed.org"))
+
+(map! :localleader
+      (:map elfeed-show-mode-map
+            "w" #'elfeed-webkit-toggle))
+
+(defun dev-website ()
+  "Open local copy of moskas.github.io in xwidgets"
+  (interactive)
+  (split-window-right)
+  (windmove-right)
+  (xwidget-webkit-browse-url "file:///home/moskas/Projects/moskas.github.io/index.html"))
+
+(defun self-screenshot (&optional type)
+  "Save a screenshot of type TYPE of the current Emacs frame.
+As shown by the function `', type can wield the value `svg',
+`png', `pdf'.
+
+This function will output in /tmp a file beginning with \"Emacs\"
+and ending with the extension of the requested TYPE."
+  (interactive (list
+                (intern (completing-read "Screenshot type: "
+                                         '(png svg pdf postscript)))))
+  (let* ((extension (pcase type
+                      ('png        ".png")
+                      ('svg        ".svg")
+                      ('pdf        ".pdf")
+                      ('postscript ".ps")
+                      (otherwise (error "Cannot export screenshot of type %s" otherwise))))
+         (filename (make-temp-file "Emacs-" nil extension))
+         (data     (x-export-frames nil type)))
+    (with-temp-file filename
+      (insert data))
+    (kill-new filename)
+    (message filename)))
+
+
 ;; Here are some additional functions/macros that could help you configure Doom:
 ;;
 ;; - `load!' for loading external *.el files relative to this one
