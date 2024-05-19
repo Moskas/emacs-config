@@ -38,28 +38,24 @@
        "chocola-ok.png"
        "chocola-sorry.png"
        "go.png"
-       "chocola-dead.png"))
+       "chocola-dead.png"
+       "smaller_GNU.png"
+       ))
 
 (setq fancy-splash-image (logo-random))
 
 (setq doom-theme 'doom-gruvbox)
 
-(after! doom-ui
-  (use-package circadian
-    :ensure t
-    :config
-    (setq calendar-latitude 52.2297)
-    (setq calendar-longitude 21.0122)
-    (setq circadian-themes '((:sunrise . doom-gruvbox-light)
-                             (:sunset  . doom-gruvbox)))
-    (circadian-setup)))
+;;(after! doom-ui
+;;	(use-package circadian
+;;	  :ensure t
+;;	  :config
+;;	  (setq calendar-latitude 52.2297)
+;;	  (setq calendar-longitude 21.0122)
+;;	  (setq circadian-themes '((:sunrise . doom-gruvbox-light)
+;;	                           (:sunset  . doom-gruvbox)))
+;;	  (circadian-setup)))
 
-;; (after! doom-ui
-;;   ;; set your favorite themes
-;;   (setq! auto-dark-dark-theme 'doom-gruvbox
-;;          auto-dark-light-theme 'doom-gruvbox-light)
-;;   (auto-dark-mode 1))
-;;(add-to-list 'default-frame-alist '(background-color . "#32302f"))
 (setq doom-font (font-spec :family "JetBrains Mono Nerd Font" :size 16 :weight 'regular)
       ;;doom-unicode-font(font-spec :family "JetBrainsMono Nerd Font" :size 16)
       doom-variable-pitch-font (font-spec :family "JetBrains Mono Nerd Font" :size 16 :weight 'regular))
@@ -170,7 +166,11 @@
 
 ;; Remove "~" fringe in text-mode
 (remove-hook 'text-mode-hook #'vi-tilde-fringe-mode)
-(add-hook 'text-mode-hook #'olivetti-mode)
+;; Disable line-number mode in text mode
+(remove-hook 'text-mode-hook #'line-number-mode)
+(add-hook 'org-mode-hook 'markdown-mode-hook #'olivetti-mode)
+
+(setq display-line-numbers-type 'relative)
 
 (add-hook 'prog-mode #'rainbow-mode)
 (add-hook 'markdown-mode-hook #'olivetti-mode)
@@ -219,19 +219,19 @@
 (use-package rainbow-mode
   :hook org-mode prog-mode)
 
-;; direnv
-(direnv-mode)
-
 (setq mu4e-root-maildir "~/.mail/gmail"
       mu4e-sent-folder "/Sent"
       mu4e-drafts-folder "/Drafts"
-      mu4e-trash-folder "/Trash")
+      mu4e-trash-folder "/Trash"
+      mu4e-split-view 'vertical)
 
 ;; Add nano agenda
 (map! :leader
       :desc "Open nano agenda" "o a n" #'nano-agenda)
 ;; Disable evil-mode in nano-agenda buffer
 (add-to-list 'evil-insert-state-modes 'nano-agenda-mode)
+(map! :leader
+      :desc "Olliveti mode" "t o" #'olivetti-mode)
 
 (add-hook 'nix-mode #'rainbow-delimiters-mode)
 
@@ -272,6 +272,9 @@
   '(treemacs-window-background-face :background "#1d2021"))
 
 (setq rmh-elfeed-org-files (list "~/Documents/Org/Notes/Emacs/elfeed.org"))
+(setq elfeed-goodies/powerline-default-separator 'box)
+
+(add-hook! 'elfeed-show-mode-hook (lambda () olivetti-mode (spacious-padding-mode -1)))
 
 (map! :localleader
       (:map elfeed-show-mode-map
@@ -307,6 +310,15 @@ and ending with the extension of the requested TYPE."
     (kill-new filename)
     (message filename)))
 
+(defun open-current-link-in-mpv ()
+  (interactive)
+  (setq url (thing-at-point 'url))
+  (string-match "youtube.com" url))
+
+(defun rebuild-system ()
+  "Rebuild nixos flake using nh"
+  (interactive)
+  (eshell-command "nh os switch --no-nom"))
 
 ;; Here are some additional functions/macros that could help you configure Doom:
 ;;

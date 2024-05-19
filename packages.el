@@ -58,7 +58,6 @@
 (package! olivetti)
 (package! mastodon)
 (package! ement)
-(package! direnv)
 (package! ellama)
 (package! nano-agenda)
 (package! mu4e-views)
