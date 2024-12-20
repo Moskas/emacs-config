@@ -27,6 +27,7 @@
 ;; `load-theme' function. This is the default:
 ;; custom random splash image
 (load! "/home/moskas/.config/doom/custom/logo.el")
+
 (setq logo-path "/home/moskas/.config/doom/logos/")
 (setq logo-images
       (list
@@ -45,6 +46,7 @@
 (setq fancy-splash-image (logo-random))
 
 (setq doom-theme 'doom-gruvbox)
+;;(setq doom-theme 'custom-base16)
 
 ;;(after! doom-ui
 ;;	(use-package circadian
@@ -120,10 +122,10 @@
   (set-face-attribute 'org-level-3 nil :height 1.1)
   (set-face-attribute 'org-document-title nil :height 1.5)
   (display-time)
-  (highlight-indent-guides-mode 0)
   (display-line-numbers-mode 0)
   (org-indent-mode 0)
   (blamer-mode 0)
+  (olivetti-mode 1)
   (beacon-mode 0))
 (add-hook 'org-mode-hook #'my-org-faces)
 
@@ -168,12 +170,12 @@
 (remove-hook 'text-mode-hook #'vi-tilde-fringe-mode)
 ;; Disable line-number mode in text mode
 (remove-hook 'text-mode-hook #'line-number-mode)
-(add-hook 'org-mode-hook 'markdown-mode-hook #'olivetti-mode)
+;;(add-hook 'org-mode-hook 'markdown-mode-hook #'olivetti-mode)
 
 (setq display-line-numbers-type 'relative)
 
 (add-hook 'prog-mode #'rainbow-mode)
-(add-hook 'markdown-mode-hook #'olivetti-mode)
+;;(add-hook 'markdown-mode-hook () (lambda (olivetti-mode 1)))
 ;; eshell config
 (defun with-face (str &rest face-plist)
   (propertize str 'face face-plist))
@@ -204,7 +206,7 @@
   (setopt ellama-auto-scroll t)
   (setopt ellama-provider
           (make-llm-ollama
-           :chat-model "mistral" :embedding-model "mistral"))
+           :chat-model "qwen2.5-coder:7b" :embedding-model "qwen2.5-coder:7b"))
   (setopt ellama-providers
           '(("mistral" .
              (make-llm-ollama
@@ -253,19 +255,20 @@
   :init
   (spacious-padding-mode 1))
 
-(use-package centaur-tabs
-  :config
-  (setq centaur-tabs-height 32)
-  :init
-  (centaur-tabs-mode t)
-  :hook
-  (+doom-dashboard-mode . centaur-tabs-local-mode)
-  (dired-mode . centaur-tabs-local-mode)
-  (nov-mode . centaur-tabs-local-mode)
-  (xwidget-webkit-mode . centaur-tabs-local-mode)
-  (elfeed-search-mode . centaur-tabs-local-mode)
-  (elfeed-show-mode . centaur-tabs-local-mode)
-  (vterm-mode . centaur-tabs-local-mode))
+;;(use-package centaur-tabs
+;;  :config
+;;  (setq centaur-tabs-height 32)
+;;  :init
+;;  (centaur-tabs-mode t)
+;;  :hook
+;;  (+doom-dashboard-mode . centaur-tabs-local-mode)
+;;  (dired-mode . centaur-tabs-local-mode)
+;;  (nov-mode . centaur-tabs-local-mode)
+;;  (xwidget-webkit-mode . centaur-tabs-local-mode)
+;;  (elfeed-search-mode . centaur-tabs-local-mode)
+;;  (elfeed-show-mode . centaur-tabs-local-mode)
+;;  (tetris . centaur-tabs-local-mode)
+;;  (vterm-mode . centaur-tabs-local-mode))
 
 (custom-theme-set-faces! 'doom-gruvbox
   '(org-block :background "#3c3836")
@@ -319,6 +322,17 @@ and ending with the extension of the requested TYPE."
   "Rebuild nixos flake using nh"
   (interactive)
   (eshell-command "nh os switch --no-nom"))
+
+(defun insert-time ()
+  "Insert date and time at the current cursor position"
+  (interactive)
+  (insert (format-time-string "%d %b %Y %H:%M:%S" (current-time))))
+
+(map! :leader
+      :desc "Insert current time" "i t" #'insert-time)
+
+(map! :leader
+      :desc "Toggle org-indent" "t O" #'org-indent-mode)
 
 ;; Here are some additional functions/macros that could help you configure Doom:
 ;;

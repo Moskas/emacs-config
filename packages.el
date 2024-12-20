@@ -67,3 +67,4 @@
 
 (package! circadian)
 (package! spacious-padding)
+(package! org-modern)
