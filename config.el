@@ -113,6 +113,8 @@
 (setq display-time-24hr-format t)
 (setq display-time-default-load-average nil)
 
+(setq olivetti-body-width 90)
+
 ;; Org-mode tweaks
 (defun my-org-faces ()
   (setq org-hide-emphasis-markers t)
@@ -123,7 +125,7 @@
   (set-face-attribute 'org-document-title nil :height 1.5)
   (display-time)
   (display-line-numbers-mode 0)
-  (org-indent-mode 0)
+  (org-indent-mode 1)
   (blamer-mode 0)
   (olivetti-mode 1)
   (beacon-mode 0))
@@ -160,6 +162,7 @@
                             ("#+HTML:"      . ?)
                             ("#+startup:"   . ?)
                             ("#+STARTUP:"   . ?)
+                            ("#+RESULTS:"   . ?)
                             (":tangle"     . ?)))
               (add-to-list 'prettify-symbols-alist pair))
             (prettify-symbols-mode)))
@@ -232,8 +235,11 @@
       :desc "Open nano agenda" "o a n" #'nano-agenda)
 ;; Disable evil-mode in nano-agenda buffer
 (add-to-list 'evil-insert-state-modes 'nano-agenda-mode)
+
 (map! :leader
       :desc "Olliveti mode" "t o" #'olivetti-mode)
+(map! :leader
+      :desc "Spacious padding mode" "t p" #'spacious-padding-mode)
 
 (add-hook 'nix-mode #'rainbow-delimiters-mode)
 
@@ -241,20 +247,21 @@
 
 (use-package spacious-padding
   :custom
-  (setq spacious-padding-widths
-        `( :internal-border-width 5
-           :header-line-width 4
-           :mode-line-width 3
-           :tab-width 4
-           :right-divider-width 10
-           :scroll-bar-width 8
-           :fringe-width 4))
   (setq spacious-padding-subtle-mode-line
         `( :mode-line-active 'default
            :mode-line-inactive vertical-border))
   :init
   (spacious-padding-mode 1))
 
+(setq spacious-padding-widths
+      `( :internal-border-width 5
+         :header-line-width 4
+         :mode-line-width 3
+         :tab-width 4
+         :right-divider-width 2
+         :scroll-bar-width 8
+         :right-fringe-width 4
+         :left-fringe-width 4))
 ;;(use-package centaur-tabs
 ;;  :config
 ;;  (setq centaur-tabs-height 32)
@@ -270,14 +277,14 @@
 ;;  (tetris . centaur-tabs-local-mode)
 ;;  (vterm-mode . centaur-tabs-local-mode))
 
-(custom-theme-set-faces! 'doom-gruvbox
-  '(org-block :background "#3c3836")
-  '(treemacs-window-background-face :background "#1d2021"))
+;;(custom-theme-set-faces! 'doom-gruvbox
+;;  '(org-block :background "#3c3836")
+;;  '(treemacs-window-background-face :background "#1d2021"))
 
-(setq rmh-elfeed-org-files (list "~/Documents/Org/Notes/Emacs/elfeed.org"))
+(setq rmh-elfeed-org-files (list "~/Documents/Org/elfeed.org"))
 (setq elfeed-goodies/powerline-default-separator 'box)
 
-(add-hook! 'elfeed-show-mode-hook (lambda () olivetti-mode (spacious-padding-mode -1)))
+;;(add-hook! 'elfeed-show-mode-hook (lambda () olivetti-mode (spacious-padding-mode -1)))
 
 (map! :localleader
       (:map elfeed-show-mode-map
