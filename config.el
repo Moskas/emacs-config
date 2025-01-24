@@ -27,6 +27,7 @@
 ;; `load-theme' function. This is the default:
 ;; custom random splash image
 (load! "/home/moskas/.config/doom/custom/logo.el")
+(load! "/home/moskas/.config/doom/custom/binds.el")
 
 (setq logo-path "/home/moskas/.config/doom/logos/")
 (setq logo-images
@@ -44,8 +45,12 @@
        ))
 
 (setq fancy-splash-image (logo-random))
+(setq doom-theme
+      (pcase (system-name)
+        ("cheshire" 'doom-gruvbox)
+        ("noshiro" 'doom-solarized-dark)
+        (_ 'doom-homage-white)))
 
-(setq doom-theme 'doom-gruvbox)
 ;;(setq doom-theme 'custom-base16)
 
 ;;(after! doom-ui
@@ -231,15 +236,15 @@
       mu4e-split-view 'vertical)
 
 ;; Add nano agenda
-(map! :leader
-      :desc "Open nano agenda" "o a n" #'nano-agenda)
-;; Disable evil-mode in nano-agenda buffer
+;;(map! :leader
+;;      :desc "Open nano agenda" "o a n" #'nano-agenda)
+;;;; Disable evil-mode in nano-agenda buffer
 (add-to-list 'evil-insert-state-modes 'nano-agenda-mode)
-
-(map! :leader
-      :desc "Olliveti mode" "t o" #'olivetti-mode)
-(map! :leader
-      :desc "Spacious padding mode" "t p" #'spacious-padding-mode)
+;;
+;;(map! :leader
+;;      :desc "Olliveti mode" "t o" #'olivetti-mode)
+;;(map! :leader
+;;      :desc "Spacious padding mode" "t p" #'spacious-padding-mode)
 
 (add-hook 'nix-mode #'rainbow-delimiters-mode)
 
@@ -288,7 +293,8 @@
 
 (map! :localleader
       (:map elfeed-show-mode-map
-            "w" #'elfeed-webkit-toggle))
+            "w" #'elfeed-webkit-toggle
+            "u" #'elfeed-update))
 
 (defun dev-website ()
   "Open local copy of moskas.github.io in xwidgets"
@@ -319,6 +325,8 @@ and ending with the extension of the requested TYPE."
       (insert data))
     (kill-new filename)
     (message filename)))
+
+(add-hook! mpc-mode-hook (spacious-padding-mode -1))
 
 (defun open-current-link-in-mpv ()
   (interactive)
