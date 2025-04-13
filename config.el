@@ -48,24 +48,24 @@
 (setq doom-theme
       (pcase (system-name)
         ("cheshire" 'doom-gruvbox)
+        ("shimakaze" 'doom-gruvbox)
         ("noshiro" 'doom-solarized-dark)
         (_ 'doom-homage-white)))
 
-;;(setq doom-theme 'custom-base16)
+;; (after! doom-ui
+;;   (use-package circadian
+;;     :ensure t
+;;     :config
+;;     (setq calendar-latitude 52.2297)
+;;     (setq calendar-longitude 21.0122)
+;;     (setq circadian-themes '((:sunrise . doom-gruvbox-light)
+;;                              (:sunset  . doom-gruvbox)))
+;;     (circadian-setup)))
+(setq doom-theme 'doom-gruvbox)
 
-;;(after! doom-ui
-;;	(use-package circadian
-;;	  :ensure t
-;;	  :config
-;;	  (setq calendar-latitude 52.2297)
-;;	  (setq calendar-longitude 21.0122)
-;;	  (setq circadian-themes '((:sunrise . doom-gruvbox-light)
-;;	                           (:sunset  . doom-gruvbox)))
-;;	  (circadian-setup)))
-
-(setq doom-font (font-spec :family "JetBrains Mono Nerd Font" :size 16 :weight 'regular)
+(setq doom-font (font-spec :family "JetBrains Mono Nerd Font" :size 14 :weight 'regular)
       ;;doom-unicode-font(font-spec :family "JetBrainsMono Nerd Font" :size 16)
-      doom-variable-pitch-font (font-spec :family "JetBrains Mono Nerd Font" :size 16 :weight 'regular))
+      doom-variable-pitch-font (font-spec :family "JetBrains Mono Nerd Font" :size 14 :weight 'regular))
 (global-prettify-symbols-mode 1)
 
 ;; elcord settings
@@ -77,8 +77,7 @@
 (setq mastodon-active-user "Moskas")
 (setq mastodon-instance-url "https://fosstodon.org")
 
-(use-package! blamer
-  :bind (("s-i" . blamer-show-commit-info))
+(use-package blamer
   :after
   doom-theme
   :defer 20
@@ -112,6 +111,34 @@
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
 (setq org-directory "~/Documents/Org/")
+
+(use-package org
+  :config
+  (require 'org-habit)
+  (setq org-habit-graph-column 20)       ;; Show the graph after the 60th column
+  (setq org-habit-preceding-days 7)      ;; Days to show before today
+  (setq org-habit-following-days 7)      ;; Days to show after today
+  (setq org-habit-show-habits-only-for-today t) ;; Show habits every day
+  (setq org-habit-show-habits t)
+
+  (setq org-habit-completed-glyph ?X
+        org-habit-today-glyph ?T)
+
+  (add-to-list 'org-modules 'org-habit))
+
+(setq org-agenda-custom-commands
+      '(("h" "Habits"
+         ((agenda ""
+                  ((org-agenda-span 7)
+                   (org-agenda-show-log t)
+                   (org-habit-show-all-today t)))))
+        ("m" "Monthly Habits Overview"
+         ((agenda ""
+                  ((org-agenda-span 30)
+                   (org-agenda-show-log t)
+                   (org-habit-show-all-today t)))))))
+
+
 (after! org
   (setq org-roam-directory "~/Documents/org/roam/")
   (setq org-roam-index-file "~/Documents/org/roam/index.org"))
@@ -135,7 +162,6 @@
   (olivetti-mode 1)
   (beacon-mode 0))
 (add-hook 'org-mode-hook #'my-org-faces)
-
 (add-hook 'org-mode-hook
           (lambda ()
             (dolist (pair '(("[ ]"         . ?)
@@ -347,7 +373,16 @@ and ending with the extension of the requested TYPE."
       :desc "Insert current time" "i t" #'insert-time)
 
 (map! :leader
-      :desc "Toggle org-indent" "t O" #'org-indent-mode)
+      :desc "org-indent" "t O" #'org-indent-mode)
+
+(map! :leader :desc "blamer-mode" "t B" #'blamer-mode)
+(map! :leader :desc "commit info" "o G" #'blamer-show-commit-info)
+
+(map! :leader :desc "elfeed" "o n" #'elfeed)
+(add-hook! 'elfeed-show-mode-hook #'olivetti-mode)
+
+;;(map! :leader
+;;      :desc "Open CV template in browser" "o C" (browse-url (+  "generated_cv.html")))
 
 ;; Here are some additional functions/macros that could help you configure Doom:
 ;;

@@ -67,4 +67,4 @@
 
 (package! circadian)
 (package! spacious-padding)
-(package! org-modern)
+(package! show-font)

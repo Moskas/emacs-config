@@ -35,7 +35,7 @@
        (emoji +unicode)  ; 🙂
        hl-todo           ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
        indent-guides     ; highlighted indent columns
-       ligatures         ; ligatures and symbols to make your code pretty again
+       (ligatures +extra)         ; ligatures and symbols to make your code pretty again
        minimap           ; show a map of the code on the side
        modeline          ; snazzy, Atom-inspired modeline, plus API
        nav-flash         ; blink cursor line after big motions
@@ -43,9 +43,9 @@
        ophints           ; highlight the region an operation acts on
        (popup +defaults)   ; tame sudden yet inevitable temporary windows
        ;;tabs              ; a tab bar for Emacs
-       treemacs          ; a project drawer, like neotree but cooler
+       (treemacs +lsp)          ; a project drawer, like neotree but cooler
        unicode           ; extended unicode support for various languages
-       vc-gutter         ; vcs diff in the fringe
+       (vc-gutter +pretty)         ; vcs diff in the fringe
        vi-tilde-fringe   ; fringe tildes to mark beyond EOB
        window-select     ; visually switch windows
        workspaces        ; tab emulation, persistence & separate workspaces
@@ -79,7 +79,7 @@
        vterm             ; the best terminal emulation in Emacs
 
        :checkers
-       syntax              ; tasing you for every semicolon you forget
+       (syntax +childframe +flymake +icons)              ; tasing you for every semicolon you forget
        (spell +flyspell) ; tasing you for misspelling mispelling
        ;;grammar           ; tasing grammar mistake every you make
 
@@ -139,7 +139,7 @@
        ;;idris             ; a language you can depend on
        json              ; At least it ain't XML
        ;;(java +meghanada) ; the poster child for carpal tunnel syndrome
-       (javascript +lsp)        ; all(hope(abandon(ye(who(enter(here))))))
+       (javascript +lsp +tree-sitter)        ; all(hope(abandon(ye(who(enter(here))))))
        ;;julia             ; a better, faster MATLAB
        ;;kotlin            ; a better, slicker Java(Script)
        latex             ; writing papers in Emacs has never been so fun
@@ -150,7 +150,7 @@
        ;;nim               ; python + lisp at the speed of c
        (nix +lsp)               ; I hereby declare "nix geht mehr!"
        ;;ocaml             ; an objective camel
-       (org +roam2 +pretty +toc)               ; organize your plain life in plain text
+       (org +roam2 +toc +noter +journal)  ; organize your plain life in plain text
        ;;php               ; perl's insecure younger brother
        ;;plantuml          ; diagrams for confusing people more
        ;;purescript        ; javascript, but functional
@@ -169,7 +169,7 @@
        ;;solidity          ; do you need a blockchain? No.
        ;;swift             ; who asked for emoji variables?
        ;;terra             ; Earth and Moon in alignment for performance.
-       web               ; the tubes
+       (web +lsp +tree-sitter)               ; the tubes
        yaml              ; JSON, but readable
        ;;zig               ; C, but simpler
 
@@ -183,7 +183,7 @@
        ;;emms
        everywhere        ; *leave* Emacs!? You must be joking
        ;;irc               ; how neckbeards socialize
-       (rss +org)        ; emacs as an RSS reader
+       (rss +org +youtube)        ; emacs as an RSS reader
        ;;twitter           ; twitter client https://twitter.com/vnought
 
        :config
