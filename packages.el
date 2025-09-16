@@ -58,13 +58,14 @@
 (package! olivetti)
 (package! mastodon)
 (package! ement)
-(package! ellama)
+;;(package! ellama)
 (package! nano-agenda)
 (package! mu4e-views)
-(package! stumpwm-mode)
+;;(package! stumpwm-mode)
 
 (package! elfeed-webkit)
 
 (package! circadian)
 (package! spacious-padding)
 (package! show-font)
+(package! rainbow-delimiters)

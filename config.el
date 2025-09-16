@@ -148,7 +148,7 @@
 (setq olivetti-body-width 90)
 
 ;; Org-mode tweaks
-(defun my-org-faces ()
+(defun my-org ()
   (setq org-hide-emphasis-markers t)
   (set-face-attribute 'org-todo nil :height 1.0)
   (set-face-attribute 'org-level-1 nil :height 1.3)
@@ -156,12 +156,18 @@
   (set-face-attribute 'org-level-3 nil :height 1.1)
   (set-face-attribute 'org-document-title nil :height 1.5)
   (display-time)
+  (setq org-todo-keywords '((sequence "TODO(t)" "PROJ(p)" "LOOP(r)" "STRT(s)" "WAIT(w)" "HOLD(h)" "IDEA(i)"
+                             "|" "DONE(d)" "KILL(k)")
+                            (sequence "PLANNED(p)" "INPROGRESS(i)" "DONE(d)")
+                            (sequence "[ ](T)" "[-](S)" "[?](W)" "|" "[X](D)")
+                            (sequence "|" "OKAY(o)" "YES(y)" "NO(n)")))
+  (display-battery-mode 1)
   (display-line-numbers-mode 0)
   (org-indent-mode 1)
   (blamer-mode 0)
   (olivetti-mode 1)
   (beacon-mode 0))
-(add-hook 'org-mode-hook #'my-org-faces)
+(add-hook 'org-mode-hook #'my-org)
 (add-hook 'org-mode-hook
           (lambda ()
             (dolist (pair '(("[ ]"         . ?)
@@ -232,22 +238,22 @@
 (setq eshell-prompt-function 'shk-eshell-prompt)
 (setq eshell-highlight-prompt nil)
 
-(use-package! ellama
-  :init
-  (setopt ellama-language "English")
-  (require 'llm-ollama)
-  (setopt ellama-keymap-prefix "C-c e")
-  (setopt ellama-auto-scroll t)
-  (setopt ellama-provider
-          (make-llm-ollama
-           :chat-model "qwen2.5-coder:7b" :embedding-model "qwen2.5-coder:7b"))
-  (setopt ellama-providers
-          '(("mistral" .
-             (make-llm-ollama
-              :chat-model "mistral" :embedding-model "mistral"))
-            ("codellama" .
-             (make-llm-ollama
-              :chat-model "codellama" :embedding-model "codellama")))))
+;; (use-package! ellama
+;;   :init
+;;   (setopt ellama-language "English")
+;;   (require 'llm-ollama)
+;;   (setopt ellama-keymap-prefix "C-c e")
+;;   (setopt ellama-auto-scroll t)
+;;   (setopt ellama-provider
+;;           (make-llm-ollama
+;;            :chat-model "qwen2.5-coder:7b" :embedding-model "qwen2.5-coder:7b"))
+;;   (setopt ellama-providers
+;;           '(("mistral" .
+;;              (make-llm-ollama
+;;               :chat-model "mistral" :embedding-model "mistral"))
+;;             ("codellama" .
+;;              (make-llm-ollama
+;;               :chat-model "codellama" :embedding-model "codellama")))))
 
 (add-hook 'nix-mode-hook #'rainbow-delimiters-mode)
 (setq direnv-always-show-summary nil)
@@ -318,9 +324,10 @@
 ;;(add-hook! 'elfeed-show-mode-hook (lambda () olivetti-mode (spacious-padding-mode -1)))
 
 (map! :localleader
-      (:map elfeed-show-mode-map
-            "w" #'elfeed-webkit-toggle
-            "u" #'elfeed-update))
+      :map elfeed-show-mode-map
+      "o" #'elfeed-org
+      "w" #'elfeed-webkit-toggle
+      "u" #'elfeed-update)
 
 (defun dev-website ()
   "Open local copy of moskas.github.io in xwidgets"
@@ -380,6 +387,9 @@ and ending with the extension of the requested TYPE."
 
 (map! :leader :desc "elfeed" "o n" #'elfeed)
 (add-hook! 'elfeed-show-mode-hook #'olivetti-mode)
+(defun my-elfeed ()
+  (solaire-mode -1))
+(add-hook! 'elfeed-show-mode-hook #'my-elfeed)
 
 ;;(map! :leader
 ;;      :desc "Open CV template in browser" "o C" (browse-url (+  "generated_cv.html")))
