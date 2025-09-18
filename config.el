@@ -325,8 +325,12 @@
 
 (map! :localleader
       :map elfeed-show-mode-map
-      "o" #'elfeed-org
       "w" #'elfeed-webkit-toggle
+      "y" #'elfeed-kill-link-url-at-point)
+
+(map! :localleader
+      :map elfeed-search-mode-map
+      "o" #'elfeed-org
       "u" #'elfeed-update)
 
 (defun dev-website ()
