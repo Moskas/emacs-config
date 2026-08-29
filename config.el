@@ -63,9 +63,8 @@
 ;;     (circadian-setup)))
 (setq doom-theme 'doom-gruvbox)
 
-(setq doom-font (font-spec :family "JetBrains Mono Nerd Font" :size 14 :weight 'regular)
-      ;;doom-unicode-font(font-spec :family "JetBrainsMono Nerd Font" :size 16)
-      doom-variable-pitch-font (font-spec :family "JetBrains Mono Nerd Font" :size 14 :weight 'regular))
+(setq doom-font (font-spec :family "Terminess Nerd Font" :size 16 :weight 'regular)
+      doom-variable-pitch-font (font-spec :family "Terminess Nerd Font" :size 16 :weight 'regular))
 (global-prettify-symbols-mode 1)
 
 ;; elcord settings
@@ -76,6 +75,10 @@
 
 (setq mastodon-active-user "Moskas")
 (setq mastodon-instance-url "https://fosstodon.org")
+
+(add-hook! 'mastodon-mode-hook (lambda()(emojify-mode nil)))
+
+(add-hook! 'conf-mode-hook (display-line-numbers-mode 0))
 
 (use-package blamer
   :after
@@ -101,11 +104,11 @@
 (add-hook 'nov-mode-hook 'visual-line-mode)
 (add-hook 'nov-mode-hook 'visual-fill-column-mode)
 
-(use-package nov-xwidget
-  :after nov
-  :config
-  (define-key nov-mode-map (kbd "o") 'nov-xwidget-view)
-  (add-hook 'nov-mode-hook 'nov-xwidget-inject-all-files))
+;; (use-package nov-xwidget
+;;   :after nov
+;;   :config
+;;   (define-key nov-mode-map (kbd "o") 'nov-xwidget-view)
+;;   (add-hook 'nov-mode-hook 'nov-xwidget-inject-all-files))
 
 
 ;; If you use `org' and don't want your org files in the default location below,
@@ -149,11 +152,11 @@
 
 ;; Org-mode tweaks
 (defun my-org ()
-  (setq org-hide-emphasis-markers t)
-  (set-face-attribute 'org-todo nil :height 1.0)
-  (set-face-attribute 'org-level-1 nil :height 1.3)
-  (set-face-attribute 'org-level-2 nil :height 1.2)
-  (set-face-attribute 'org-level-3 nil :height 1.1)
+  ;;(setq org-hide-emphasis-markers t)
+  ;;(set-face-attribute 'org-todo nil :height 1.0)
+  ;;(set-face-attribute 'org-level-1 nil :height 1.3)
+  ;;(set-face-attribute 'org-level-2 nil :height 1.2)
+  ;;(set-face-attribute 'org-level-3 nil :height 1.1)
   (set-face-attribute 'org-document-title nil :height 1.5)
   (display-time)
   (setq org-todo-keywords '((sequence "TODO(t)" "PROJ(p)" "LOOP(r)" "STRT(s)" "WAIT(w)" "HOLD(h)" "IDEA(i)"
@@ -214,6 +217,7 @@
 
 (setq display-line-numbers-type 'relative)
 
+(setq rainbow-delimiters-mode 1)
 (add-hook 'prog-mode #'rainbow-mode)
 ;;(add-hook 'markdown-mode-hook () (lambda (olivetti-mode 1)))
 ;; eshell config
@@ -254,6 +258,12 @@
 ;;             ("codellama" .
 ;;              (make-llm-ollama
 ;;               :chat-model "codellama" :embedding-model "codellama")))))
+
+;; (gptel-make-ollama "Ollama"             ;Any name of your choosing
+;;   :host "localhost:11434"               ;Where it's running
+;;   :stream t                             ;Stream responses
+;;   :models '(deepseek-r1:8b))          ;List of models
+
 
 (add-hook 'nix-mode-hook #'rainbow-delimiters-mode)
 (setq direnv-always-show-summary nil)
