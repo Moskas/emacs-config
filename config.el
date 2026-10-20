@@ -227,8 +227,7 @@
 
 (setq display-line-numbers-type 'relative)
 
-(setq rainbow-delimiters-mode 1)
-(add-hook 'prog-mode #'rainbow-mode)
+(add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
 ;; eshell config
 (defun with-face (str &rest face-plist)
   (propertize str 'face face-plist))
@@ -274,7 +273,6 @@
 ;;   :models '(deepseek-r1:8b))          ;List of models
 
 
-(add-hook 'nix-mode-hook #'rainbow-delimiters-mode)
 (setq direnv-always-show-summary nil)
 
 (use-package rainbow-mode
@@ -297,7 +295,6 @@
 ;;(map! :leader
 ;;      :desc "Spacious padding mode" "t p" #'spacious-padding-mode)
 
-(add-hook 'nix-mode #'rainbow-delimiters-mode)
 
 (pixel-scroll-precision-mode t)
 
