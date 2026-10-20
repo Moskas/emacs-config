@@ -73,3 +73,4 @@
 ;;(package! image-dired)
 ;;(package! dired-preview)
 (package! kdl-mode)
+(package! vterm-toggle)

@@ -5,10 +5,12 @@
  ;; If there is more than one, they won't work right.
  '(magit-todos-insert-after '(bottom) nil nil "Changed by setter of obsolete option `magit-todos-insert-at'")
  '(org-agenda-files
-   '("~/Documents/Org/Me/habits.org" "/home/moskas/Documents/Org/Me/tasks.org"
+   '("/home/moskas/Documents/Org/Me/habits.org"
+     "/home/moskas/Documents/Org/Agenda/todo.org"
+     "/home/moskas/Documents/Org/Agenda/tasks.org"
      "/home/moskas/Documents/Org/README.org"))
  '(package-selected-packages
-   '(mu4e-views vterm-toggle smtpmail-multi mu4e mastodon elcord)))
+   '(elcord htmlize mastodon mu4e mu4e-views ox-rss smtpmail-multi vterm-toggle)))
 ;;(add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
