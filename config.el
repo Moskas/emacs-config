@@ -61,12 +61,12 @@
 ;;                              (:sunset  . doom-gruvbox)))
 ;;     (circadian-setup)))
 
-;; Fallback theme, overridden by the Nix-generated theme from moskas.colorscheme
-(setq doom-theme 'doom-gruvbox)
-(load! "nix-theme" doom-user-dir t)
-
-(setq doom-font (font-spec :family "Terminess Nerd Font" :size 16 :weight 'regular)
-      doom-variable-pitch-font (font-spec :family "Terminess Nerd Font" :size 16 :weight 'regular))
+;; Fallback theme and font, overridden by the Nix-generated moskas.* settings.
+;; Fontconfig strings, since a :weight in font-spec breaks doom-big-font-mode
+(setq doom-theme 'doom-gruvbox
+      doom-font "Terminess Nerd Font-12"
+      doom-variable-pitch-font "Terminess Nerd Font-12")
+(load! "nix-style" doom-user-dir t)
 (global-prettify-symbols-mode 1)
 
 ;; elcord settings
