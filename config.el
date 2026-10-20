@@ -51,13 +51,6 @@
        ))
 
 (setq fancy-splash-image (logo-random))
-(setq doom-theme
-      (pcase (system-name)
-        ("cheshire" 'doom-gruvbox)
-        ("shimakaze" 'doom-gruvbox)
-        ("noshiro" 'doom-solarized-dark)
-        (_ 'doom-homage-white)))
-
 ;; (after! doom-ui
 ;;   (use-package circadian
 ;;     :ensure t
@@ -67,7 +60,10 @@
 ;;     (setq circadian-themes '((:sunrise . doom-gruvbox-light)
 ;;                              (:sunset  . doom-gruvbox)))
 ;;     (circadian-setup)))
+
+;; Fallback theme, overridden by the Nix-generated theme from moskas.colorscheme
 (setq doom-theme 'doom-gruvbox)
+(load! "nix-theme" doom-user-dir t)
 
 (setq doom-font (font-spec :family "Terminess Nerd Font" :size 16 :weight 'regular)
       doom-variable-pitch-font (font-spec :family "Terminess Nerd Font" :size 16 :weight 'regular))
